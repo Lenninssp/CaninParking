@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		4F0276832EB15ED4006BF4D0 /* CanninLennin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CanninLennin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE17215C2EB15E7A00CBC646 /* CanninParking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CanninParking.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		4F0276852EB15ED4006BF4D0 /* CanninLennin */ = {
+		FE17215E2EB15E7A00CBC646 /* CanninParking */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = CanninLennin;
+			path = CanninParking;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4F0276802EB15ED4006BF4D0 /* Frameworks */ = {
+		FE1721592EB15E7A00CBC646 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4F02767A2EB15ED4006BF4D0 = {
+		FE1721532EB15E7A00CBC646 = {
 			isa = PBXGroup;
 			children = (
-				4F0276852EB15ED4006BF4D0 /* CanninLennin */,
-				4F0276842EB15ED4006BF4D0 /* Products */,
+				FE17215E2EB15E7A00CBC646 /* CanninParking */,
+				FE17215D2EB15E7A00CBC646 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		4F0276842EB15ED4006BF4D0 /* Products */ = {
+		FE17215D2EB15E7A00CBC646 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4F0276832EB15ED4006BF4D0 /* CanninLennin.app */,
+				FE17215C2EB15E7A00CBC646 /* CanninParking.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4F0276822EB15ED4006BF4D0 /* CanninLennin */ = {
+		FE17215B2EB15E7A00CBC646 /* CanninParking */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4F02768E2EB15ED4006BF4D0 /* Build configuration list for PBXNativeTarget "CanninLennin" */;
+			buildConfigurationList = FE1721672EB15E7B00CBC646 /* Build configuration list for PBXNativeTarget "CanninParking" */;
 			buildPhases = (
-				4F02767F2EB15ED4006BF4D0 /* Sources */,
-				4F0276802EB15ED4006BF4D0 /* Frameworks */,
-				4F0276812EB15ED4006BF4D0 /* Resources */,
+				FE1721582EB15E7A00CBC646 /* Sources */,
+				FE1721592EB15E7A00CBC646 /* Frameworks */,
+				FE17215A2EB15E7A00CBC646 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				4F0276852EB15ED4006BF4D0 /* CanninLennin */,
+				FE17215E2EB15E7A00CBC646 /* CanninParking */,
 			);
-			name = CanninLennin;
+			name = CanninParking;
 			packageProductDependencies = (
 			);
-			productName = CanninLennin;
-			productReference = 4F0276832EB15ED4006BF4D0 /* CanninLennin.app */;
+			productName = CanninParking;
+			productReference = FE17215C2EB15E7A00CBC646 /* CanninParking.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		4F02767B2EB15ED4006BF4D0 /* Project object */ = {
+		FE1721542EB15E7A00CBC646 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					4F0276822EB15ED4006BF4D0 = {
+					FE17215B2EB15E7A00CBC646 = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
 			};
-			buildConfigurationList = 4F02767E2EB15ED4006BF4D0 /* Build configuration list for PBXProject "CanninLennin" */;
+			buildConfigurationList = FE1721572EB15E7A00CBC646 /* Build configuration list for PBXProject "CanninParking" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 4F02767A2EB15ED4006BF4D0;
+			mainGroup = FE1721532EB15E7A00CBC646;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 4F0276842EB15ED4006BF4D0 /* Products */;
+			productRefGroup = FE17215D2EB15E7A00CBC646 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4F0276822EB15ED4006BF4D0 /* CanninLennin */,
+				FE17215B2EB15E7A00CBC646 /* CanninParking */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4F0276812EB15ED4006BF4D0 /* Resources */ = {
+		FE17215A2EB15E7A00CBC646 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4F02767F2EB15ED4006BF4D0 /* Sources */ = {
+		FE1721582EB15E7A00CBC646 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		4F02768C2EB15ED4006BF4D0 /* Debug */ = {
+		FE1721652EB15E7B00CBC646 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -188,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		4F02768D2EB15ED4006BF4D0 /* Release */ = {
+		FE1721662EB15E7B00CBC646 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,14 +244,13 @@
 			};
 			name = Release;
 		};
-		4F02768F2EB15ED4006BF4D0 /* Debug */ = {
+		FE1721682EB15E7B00CBC646 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QL9MEXY924;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -264,7 +263,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = lenninssp.CanninLennin;
+				PRODUCT_BUNDLE_IDENTIFIER = camilo.CanninParking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -276,14 +275,13 @@
 			};
 			name = Debug;
 		};
-		4F0276902EB15ED4006BF4D0 /* Release */ = {
+		FE1721692EB15E7B00CBC646 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QL9MEXY924;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -296,7 +294,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = lenninssp.CanninLennin;
+				PRODUCT_BUNDLE_IDENTIFIER = camilo.CanninParking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -311,25 +309,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4F02767E2EB15ED4006BF4D0 /* Build configuration list for PBXProject "CanninLennin" */ = {
+		FE1721572EB15E7A00CBC646 /* Build configuration list for PBXProject "CanninParking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4F02768C2EB15ED4006BF4D0 /* Debug */,
-				4F02768D2EB15ED4006BF4D0 /* Release */,
+				FE1721652EB15E7B00CBC646 /* Debug */,
+				FE1721662EB15E7B00CBC646 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4F02768E2EB15ED4006BF4D0 /* Build configuration list for PBXNativeTarget "CanninLennin" */ = {
+		FE1721672EB15E7B00CBC646 /* Build configuration list for PBXNativeTarget "CanninParking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4F02768F2EB15ED4006BF4D0 /* Debug */,
-				4F0276902EB15ED4006BF4D0 /* Release */,
+				FE1721682EB15E7B00CBC646 /* Debug */,
+				FE1721692EB15E7B00CBC646 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 4F02767B2EB15ED4006BF4D0 /* Project object */;
+	rootObject = FE1721542EB15E7A00CBC646 /* Project object */;
 }
