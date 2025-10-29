@@ -21,7 +21,7 @@ struct ContentView: View {
     var body: some View {
 
         ZStack(alignment: .center) {
-            MapView()
+            MapView3()
                 .ignoresSafeArea()
                 .blur(radius: selectedTab == .search || selectedTab == .settings  ? 5 : 0)
             Group{
