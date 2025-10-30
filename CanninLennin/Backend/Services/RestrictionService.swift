@@ -14,12 +14,32 @@ class RestrictionService {
     public init() {}
 
     private var restrictions: [Restriction] = []
+    private var streetSegments: [StreetSegment] = []
 
     func getAll() -> [Restriction] {
         return restrictions
     }
 
-    func load() {
+    func loadStreetSegments() {
+
+        guard let url = Bundle.main.url(forResource: "gbdouble", withExtension: "json") else {
+            print("gdouble.json not found")
+            return
+        }
+
+        do {
+            let data = try! Data(contentsOf: url)
+            let geojson = try JSONDecoder().decode(StreetSegmentGeoJSON.self, from: data)
+
+            self.streetSegments = geojson.features.map({ $0.toStreetSegment() })
+
+            print("Street segments loaded: ", streetSegments.count)
+        } catch {
+            print("Error decoding gdouble.json: ", error)
+        }
+    }
+
+    func loadRestrictions() {
 
         // if let resourcePath = Bundle.main.resourcePath {
         //     do {
@@ -58,7 +78,6 @@ class RestrictionService {
                 latitude: userLocation.latitude,
                 longitude: userLocation.longitude
             )
-            let distance = locationA.distance(from: userLoc)
 
             return locationA.distance(from: userLoc) <= meters
         }

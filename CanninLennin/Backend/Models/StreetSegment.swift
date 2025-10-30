@@ -4,22 +4,15 @@
 //
 //  Created by Lennin Sabogal on 29/10/25.
 //
-
+import CoreLocation
 import Foundation
 
-struct Coordinate: Codable {
-    let latitude: Double
-    let lngitudce: Double
+
+struct StreetSegment {
+    let id: Int
+    let coordinates: [CLLocationCoordinate2D]
+    let streetName: String
+    let addressStart: Int
+    let addressEnd: Int 
 }
 
-struct StreetSegment: Codable {
-    let id: String
-    let location: [Coordinate]
-    let state: StreetState
-}
-
-enum StreetState: String, Codable {
-    case open
-    case restricted
-    case closed
-}
