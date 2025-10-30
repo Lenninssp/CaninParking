@@ -5,11 +5,10 @@
 //  Created by Lennin Sabogal on 29/10/25.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
-
-extension CLLocationCoordinate2D: Decodable {
+extension CLLocationCoordinate2D: @retroactive Decodable {
     public enum CodingKeys: String, CodingKey {
         case latitude
         case longitude
@@ -22,7 +21,6 @@ extension CLLocationCoordinate2D: Decodable {
         self.init(latitude: latitude, longitude: longitude)
     }
 }
-
 
 struct ParkingGeoJSON: Decodable {
     let features: [ParkingFeature]
@@ -44,11 +42,10 @@ struct ParkingGeometry: Decodable {
     let coordinates: [Double]
 }
 
-
 extension ParkingFeature {
     func toRestriction() -> Restriction {
-        let lat = geometry.coordinates.count > 1 ? geometry.coordinates[1] : nil
-        let lon = geometry.coordinates.count > 2 ? geometry.coordinates[2] : nil
+        let lon = geometry.coordinates.first
+        let lat = geometry.coordinates.dropFirst().first
 
         let coord = CLLocationCoordinate2D(
             latitude: lat ?? 0,
@@ -56,7 +53,9 @@ extension ParkingFeature {
         )
 
         return Restriction(
-            panneauId: properties.PANNEAU_ID_RPA, poleId: properties.POTEAU_ID_POT, description: properties.DESCRIPTION_RPA, code: properties.CODE_RPA ?? "UNKOWN", coordinate: coord
+            panneauId: properties.PANNEAU_ID_RPA, poleId: properties.POTEAU_ID_POT,
+            description: properties.DESCRIPTION_RPA, code: properties.CODE_RPA ?? "UNKOWN",
+            coordinate: coord
         )
     }
 }

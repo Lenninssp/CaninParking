@@ -15,6 +15,10 @@ class RestrictionService {
 
     private var restrictions: [Restriction] = []
 
+    func getAll() -> [Restriction] {
+        return restrictions
+    }
+
     func load() {
 
         // if let resourcePath = Bundle.main.resourcePath {
@@ -34,7 +38,6 @@ class RestrictionService {
         }
 
         let data = try! Data(contentsOf: url)
-        print(data.count)
         let geojson = try! JSONDecoder().decode(ParkingGeoJSON.self, from: data)
         self.restrictions = geojson.features.map { $0.toRestriction() }
 
@@ -43,7 +46,10 @@ class RestrictionService {
     func getRestrictions(near userLocation: CLLocationCoordinate2D, maxDistance meters: Double)
         -> [Restriction]
     {
-        restrictions.filter { restriction in
+        print("🔍 Searching near lat:", userLocation.latitude, "lon:", userLocation.longitude)
+
+        return restrictions.filter { restriction in
+
             let locationA = CLLocation(
                 latitude: restriction.coordinate.latitude,
                 longitude: restriction.coordinate.longitude,
@@ -52,8 +58,24 @@ class RestrictionService {
                 latitude: userLocation.latitude,
                 longitude: userLocation.longitude
             )
+            let distance = locationA.distance(from: userLoc)
 
             return locationA.distance(from: userLoc) <= meters
+        }
+    }
+
+    func getLongitudeLatitudeRestriction(coordinates userLocation: CLLocationCoordinate2D)
+        -> Restriction?
+    {
+        restrictions.min { a, b in
+            let locationA = CLLocation(
+                latitude: a.coordinate.latitude, longitude: a.coordinate.longitude)
+            let locationB = CLLocation(
+                latitude: b.coordinate.latitude, longitude: b.coordinate.longitude)
+            let userLoc = CLLocation(
+                latitude: userLocation.latitude, longitude: userLocation.longitude)
+
+            return locationA.distance(from: userLoc) < locationB.distance(from: userLoc)
         }
     }
 
