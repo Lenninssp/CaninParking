@@ -20,10 +20,15 @@ class RestrictionService {
         return restrictions
     }
 
+    func load() {
+        loadRestrictions()
+        loadStreetSegments()
+    }
+
     func loadStreetSegments() {
 
         guard let url = Bundle.main.url(forResource: "gbdouble", withExtension: "json") else {
-            print("gdouble.json not found")
+            print("gbdouble.json not found")
             return
         }
 
@@ -96,6 +101,23 @@ class RestrictionService {
 
             return locationA.distance(from: userLoc) < locationB.distance(from: userLoc)
         }
+    }
+
+    func getStreetSegments(near userLoaction: CLLocationCoordinate2D, maxDistance meters: Double)
+        -> [StreetSegment]
+    {
+        let userLoc = CLLocation(
+            latitude: userLoaction.latitude,
+            longitude: userLoaction.longitude,
+        )
+
+        return streetSegments.filter { segment in
+            segment.coordinates.contains { point in
+                let coord = CLLocation(latitude: point.latitude, longitude: point.longitude)
+                return coord.distance(from: userLoc) <= meters
+            }
+        }
+
     }
 
 }
