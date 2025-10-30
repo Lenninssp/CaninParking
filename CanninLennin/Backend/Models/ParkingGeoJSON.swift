@@ -17,8 +17,8 @@ extension CLLocationCoordinate2D: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        var latitude = try values.decode(Double.self, forKey: .latitude)
-        var longitude = try values.decode(Double.self, forKey: .longitude)
+        let latitude = try values.decode(Double.self, forKey: .latitude)
+        let longitude = try values.decode(Double.self, forKey: .longitude)
         self.init(latitude: latitude, longitude: longitude)
     }
 }
@@ -47,11 +47,16 @@ struct ParkingGeometry: Decodable {
 
 extension ParkingFeature {
     func toRestriction() -> Restriction {
-        Restriction(
-            panneauId: properties.PANNEAU_ID_RPA, poleId: properties.POTEAU_ID_POT, description: properties.DESCRIPTION_RPA, code: properties.CODE_RPA ?? "UNKOWN", coordinate: CLLocationCoordinate2D(
-                latitude: geometry.coordinates[1],
-                longitude: geometry.coordinates[2]
-            )
+        let lat = geometry.coordinates.count > 1 ? geometry.coordinates[1] : nil
+        let lon = geometry.coordinates.count > 2 ? geometry.coordinates[2] : nil
+
+        let coord = CLLocationCoordinate2D(
+            latitude: lat ?? 0,
+            longitude: lon ?? 0
+        )
+
+        return Restriction(
+            panneauId: properties.PANNEAU_ID_RPA, poleId: properties.POTEAU_ID_POT, description: properties.DESCRIPTION_RPA, code: properties.CODE_RPA ?? "UNKOWN", coordinate: coord
         )
     }
 }
