@@ -35,11 +35,18 @@ struct Properties: Codable {
     let SENS_CIR: Int
 }
 
-struct Street {
+
+
+struct Street: Equatable {
     var id: String
     var name: String
     var coordinates: [CLLocationCoordinate2D]
+    
+    static func == (lhs: Street, rhs: Street) -> Bool {
+        lhs.id == rhs.id && lhs.name == rhs.name
+    }
 }
+
 
 extension Street {
     init(from feature: Feature) {
