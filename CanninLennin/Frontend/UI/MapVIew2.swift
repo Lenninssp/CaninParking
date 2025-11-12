@@ -4,7 +4,7 @@
 //
 //  Created by Camilo Montero on 2025-10-28.
 //
-
+/*
 import SwiftUI
 import MapKit
 
@@ -37,3 +37,4 @@ struct MapView2: View {
 #Preview {
     MapView2()
 }
+*/

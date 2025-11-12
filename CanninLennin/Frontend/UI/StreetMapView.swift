@@ -10,6 +10,7 @@ import MapKit
 
 struct StreetMapView: UIViewRepresentable {
     let streets: [Street]
+    @Binding var selectedStreet: Street?
     
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -19,54 +20,68 @@ struct StreetMapView: UIViewRepresentable {
         mapView.isRotateEnabled = false
         mapView.isPitchEnabled = false
         
-        // Add overlays for each street
+        // Add all the street overlays
         for street in streets {
             let polyline = MKPolyline(coordinates: street.coordinates, count: street.coordinates.count)
             polyline.title = street.name
             mapView.addOverlay(polyline)
         }
         
-        // Fit map region
+        // Fit region around all overlays
         let rect = mapView.overlays.reduce(MKMapRect.null) { $0.union($1.boundingMapRect) }
         mapView.setVisibleMapRect(rect,
                                   edgePadding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50),
                                   animated: false)
         
-        // Add gesture recognizer for taps
+        // Add tap gesture for overlay detection
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
         mapView.addGestureRecognizer(tap)
         
         return mapView
     }
     
-    func updateUIView(_ uiView: MKMapView, context: Context) {}
+    func updateUIView(_ uiView: MKMapView, context: Context) {
+        // Remove existing annotations
+        uiView.removeAnnotations(uiView.annotations)
+        
+        // Add a new popup if a street is selected
+        if let street = selectedStreet,
+           let midCoord = street.coordinates.dropFirst(street.coordinates.count / 2).first {
+            let annotation = MKPointAnnotation()
+            annotation.title = street.name
+            annotation.coordinate = midCoord
+            uiView.addAnnotation(annotation)
+        }
+    }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        Coordinator(streets: streets, selectedStreet: $selectedStreet)
     }
 }
 
 extension StreetMapView {
     class Coordinator: NSObject, MKMapViewDelegate {
+        let streets: [Street]
+        @Binding var selectedStreet: Street?
         
-        // Cache of renderers so we can update their width dynamically
+        init(streets: [Street], selectedStreet: Binding<Street?>) {
+            self.streets = streets
+            _selectedStreet = selectedStreet
+        }
+        
         private var renderers: [MKPolyline: MKPolylineRenderer] = [:]
         
-        // MARK: - Renderer for streets
+        // MARK: - Renderer
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-            guard let polyline = overlay as? MKPolyline else {
-                return MKOverlayRenderer()
-            }
-            
+            guard let polyline = overlay as? MKPolyline else { return MKOverlayRenderer() }
             let renderer = MKPolylineRenderer(polyline: polyline)
             renderer.strokeColor = .systemBlue
             renderer.lineWidth = adjustedLineWidth(for: mapView)
-            
             renderers[polyline] = renderer
             return renderer
         }
         
-        // MARK: - Adjust thickness when zoom changes
+        // MARK: - Keep line width consistent with zoom
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
             let newWidth = adjustedLineWidth(for: mapView)
             for renderer in renderers.values {
@@ -75,17 +90,15 @@ extension StreetMapView {
             }
         }
         
-        // Compute thickness based on zoom scale
         private func adjustedLineWidth(for mapView: MKMapView) -> CGFloat {
-            // The larger the visible map rect, the more zoomed out you are
-            // We'll map that inversely to line width
+            // Calculate zoom scale relative to visible map width
             let zoomScale = mapView.visibleMapRect.size.width / Double(mapView.bounds.size.width)
             let baseWidth: CGFloat = 3.0
-            let adjusted = max(0.5, min(6.0, baseWidth / CGFloat(zoomScale * 0.00005)))
-            return adjusted
+            // Adjust so line stays proportional to zoom
+            return max(0.5, min(6.0, baseWidth / CGFloat(zoomScale * 0.00005)))
         }
         
-        // MARK: - Tap detection
+        // MARK: - Handle tap gesture
         @objc func handleMapTap(_ gestureRecognizer: UITapGestureRecognizer) {
             guard let mapView = gestureRecognizer.view as? MKMapView else { return }
             let tapPoint = gestureRecognizer.location(in: mapView)
@@ -97,16 +110,24 @@ extension StreetMapView {
                       let renderer = mapView.renderer(for: polyline) as? MKPolylineRenderer else { continue }
                 
                 let cgPoint = renderer.point(for: mapPoint)
-                let hitBox = renderer.path?.copy(strokingWithWidth: renderer.lineWidth * 4,
-                                                 lineCap: .round, lineJoin: .round, miterLimit: 0)
+                let hitBox = renderer.path?.copy(
+                    strokingWithWidth: renderer.lineWidth * 4,
+                    lineCap: .round, lineJoin: .round, miterLimit: 0
+                )
                 
                 if let hitBox = hitBox, hitBox.contains(cgPoint) {
                     print("✅ Tapped on street: \(polyline.title ?? "Unknown")")
                     
+                    // Highlight tapped line
                     renderer.strokeColor = .systemRed
                     renderer.invalidatePath()
                     
-                    // Zoom into tapped line
+                    // Find matching Street
+                    if let street = streets.first(where: { $0.name == polyline.title }) {
+                        selectedStreet = street
+                    }
+                    
+                    // Zoom to tapped street
                     let rect = polyline.boundingMapRect
                     mapView.setVisibleMapRect(rect,
                                               edgePadding: UIEdgeInsets(top: 60, left: 60, bottom: 60, right: 60),
@@ -114,6 +135,9 @@ extension StreetMapView {
                     return
                 }
             }
+            
+            // Clear selection if tap elsewhere
+            selectedStreet = nil
         }
     }
 }

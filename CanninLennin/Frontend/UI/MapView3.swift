@@ -1,4 +1,4 @@
-import SwiftUI
+/*import SwiftUI
 import MapKit
 
 struct MapView3: View {
@@ -13,3 +13,4 @@ struct MapView3: View {
 #Preview {
     MapView3()
 }
+*/
