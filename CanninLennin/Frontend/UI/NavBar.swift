@@ -8,7 +8,6 @@ struct FloatingNavBar: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Main nav bar background
             VStack{
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.clear)
@@ -54,8 +53,6 @@ struct FloatingNavBar: View {
                                 .font(.system(size: 20, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .padding(10)
-                                
-                                //.background(Circle().fill(Color(.secondarySystemBackground)))
                         }
                         .glassEffect(.clear.tint(.gray.opacity(0.2)).interactive(true), in: .circle)
                         .buttonStyle(.plain)
@@ -105,7 +102,7 @@ struct FloatingNavBar: View {
 
         }
         
-                .ignoresSafeArea(.keyboard) // ✅ critical line
+                .ignoresSafeArea(.keyboard)
 
 
             
@@ -114,8 +111,6 @@ struct FloatingNavBar: View {
     private func collapseSearch() {
         isSearching = false
         searchFocused = false
-        // Optionally clear the query on collapse:
-        // query = ""
     }
 }
 
@@ -130,7 +125,6 @@ struct NavButton: View {
             action()
         } label: {
             ZStack {
-                // Floating rounded square background (grows equally all around)
                 RoundedRectangle(cornerRadius: 25, style: .continuous)
                     .fill(.clear)
                     .glassEffect(.clear)

@@ -5,6 +5,7 @@ final class ColoredPolyline: MKPolyline {
 }
 
 struct MapView: View {
+    // Idea taken out from https://developer.apple.com/documentation/mapkit/mkcoordinateregion
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 45.5129527086375, longitude: -73.5705591906721),
         span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002)
@@ -48,10 +49,10 @@ struct MapViewRepresentable: UIViewRepresentable {
         let rightOffset = offsetPolyline(from: streetCenterline, meters: 3, toLeft: false)
 
         let leftLine = ColoredPolyline(coordinates: leftOffset, count: leftOffset.count)
-        leftLine.isPermitted = true  // 🟩 green
+        leftLine.isPermitted = true
 
         let rightLine = ColoredPolyline(coordinates: rightOffset, count: rightOffset.count)
-        rightLine.isPermitted = false // 🟥 red
+        rightLine.isPermitted = false
 
         mapView.addOverlays([leftLine, rightLine])
     }

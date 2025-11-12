@@ -13,11 +13,9 @@ struct StreetPopUpVIew: View {
     private let streets = loadStreets()
     var body: some View {
         ZStack {
-                    // 👇 FIX: pass $selectedStreet
-                    StreetMapView(streets: streets, selectedStreet: $selectedStreet)
+            StreetMapView(streets: streets, selectedStreet: $selectedStreet)
                         .ignoresSafeArea()
                     
-                    // Popup when a street is tapped
                     if let street = selectedStreet {
                         VStack {
                             Spacer()
