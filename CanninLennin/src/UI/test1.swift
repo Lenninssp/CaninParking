@@ -38,11 +38,15 @@ struct TestGetRestrictions: View {
         
         message = "Loading..."
         
-        // Example coordinates — you can replace with real ones
+        print("🚀 Testing GetRestrictionsUseCase...")
+        
+        let controller = GetRestrictionsController()
+        
+        
         let request = RestrictionRequestModel(
-            longitude: -73.575222619530479000,   // Montreal sample
-            latitude: 45.497866173540572000,     // Montreal sample
-            radius: 1000.0         // 100 meters
+            longitude:-73.581350504631203000,
+            latitude: 45.491693947675913000,
+            radius: 5000
         )
         
         do {
@@ -65,6 +69,7 @@ struct TestGetRestrictions: View {
                 End: \(r.endTime)
                 Rate: \(r.hourlyRate)
                 Description: \(r.description)
+                Weekdays: \(r.weekdays)
                 -------------------------
                 """)
             }
