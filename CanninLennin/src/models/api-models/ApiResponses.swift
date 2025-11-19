@@ -18,7 +18,7 @@ struct PlacesResponse: Codable {
 struct ReglementationPeriodsResponse: Codable {
     var code: String
     var periodId: Int
-    var descriptiON: String
+    var description: String
 }
 
 struct PeriodsPersistence: Codable {
@@ -29,6 +29,7 @@ struct PeriodsPersistence: Codable {
     var tuesday: Bool
     var wednesday: Bool
     var thursday: Bool
+    var friday: Bool
     var saturday: Bool
     var sunday: Bool
 }

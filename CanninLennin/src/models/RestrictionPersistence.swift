@@ -1,13 +1,7 @@
 import Foundation
 
-enum Weekday {
-  case monday 
-  case tuesday
-  case wednesday
-  case thursday
-  case friday
-  case saturday
-  case sunday
+enum Weekday: Hashable {
+    case monday, tuesday, wednesday, thursday, friday, saturday, sunday
 }
 
 struct RestrictionPersistence {
@@ -19,5 +13,5 @@ struct RestrictionPersistence {
   var hourlyRate: Int
   var startTime: String
   var endTime: String
-  var week: [Weekday: Bool]
+  var weekdays: [Weekday: Bool]
 }
