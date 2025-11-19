@@ -1,68 +1,50 @@
 import Foundation
 
-//let results = try await repo.getParkingRestrictions()
 
 struct GetRestrictionsUseCase {
+    private let resRepo: RestrictionsRepo
+    private let resFactory: RestrictionFactory
+    private let presenter: RestrictionResponseFormatter
     
-    var resRepo: RestrictionsRepo
-    var resFactory: RestrictionFactory
-    var presenter: RestrictionResponseFormatter
-    
-    init() {
-        self.resRepo = RestrictionsRepo()
-        self.resFactory = RestrictionFactory()
-        self.presenter = RestrictionResponseFormatter()
+    init(
+        resRepo: RestrictionsRepo = RestrictionsRepo(),
+        resFactory: RestrictionFactory = RestrictionFactory(),
+        presenter: RestrictionResponseFormatter = RestrictionResponseFormatter()
+    ) {
+        self.resRepo = resRepo
+        self.resFactory = resFactory
+        self.presenter = presenter
     }
     
-    public func execute(request: RestrictionRequestModel) async throws -> [RestrictionResponseModel] {
+    func execute(request: RestrictionRequestModel) async throws -> [RestrictionResponseModel] {
+        print("🔍 Fetching parking restrictions...")
         
-        let results = try await resRepo.getParkingRestrictions()
+        let persistenceResults = try await resRepo.getParkingRestrictions()
+        print("📦 Received \(persistenceResults.count) restrictions from repository")
         
         var responseList: [RestrictionResponseModel] = []
+        var failedParseCount = 0
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        for result in results {
-            
-            guard let start = formatter.date(from: result.startTime),
-                  let end = formatter.date(from: result.endTime)
-            else {
+        for result in persistenceResults {
+            guard let entity = resFactory.createEntity(from: result) else {
+                failedParseCount += 1
                 continue
             }
             
-            let entity = resFactory.create(
-                id: result.id,
-                streetName: result.streetName,
-                longitude: result.longitude,
-                latitude: result.latitude,
-                startTime: start,
-                endTime: end,
-                weekdays: result.weekdays,
-                description: result.description,
-                hourlyRate: result.hourlyRate
-            )
+            let distance = entity.calculateDistance(to: request.latitude, lng: request.longitude)
             
-            if entity.isWithinRadius(
-                lat: request.latitude,
-                lng: request.longitude,
-                radius: request.radius
-            ) {
-                responseList.append(
-                    RestrictionResponseModel(
-                        id: entity.id,
-                        streetName: entity.streetName,
-                        longitude: entity.longitude,
-                        latitude: entity.latitude,
-                        startTime: entity.startTime,
-                        endTime: entity.endTime,
-                        weekdays: entity.weekdays,
-                        description: entity.description,
-                        hourlyRate: entity.hourlyRate
-                    )
-                )
+            if distance <= request.radius {
+                let response = resFactory.createResponse(from: entity, distanceFromUser: distance)
+                responseList.append(response)
             }
         }
+        
+        if failedParseCount > 0 {
+            print("Failed to parse \(failedParseCount) restrictions")
+            return presenter.prepareFailView(response: "There was an error parsint the restrictions")
+        }
+        
+        print("Found \(responseList.count) restrictions within \(request.radius)m")
         
         if responseList.isEmpty {
             return presenter.prepareFailView(

@@ -1,11 +1,12 @@
 import Foundation
 
 struct RestrictionResponseFormatter {
-    public func prepareSuccessView(response: [RestrictionResponseModel]) -> [RestrictionResponseModel]{
-        return response;
+    func prepareSuccessView(response: [RestrictionResponseModel]) -> [RestrictionResponseModel] {
+        return response.sorted { $0.distanceFromUser < $1.distanceFromUser }
     }
-    public func prepareFailView(response: String) -> [RestrictionResponseModel] {
-        return [RestrictionResponseModel(message: response)]
+    
+    func prepareFailView(response: String) -> [RestrictionResponseModel] {
+        print("There was an error:  \(response)")
+        return []
     }
 }
-

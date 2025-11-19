@@ -50,19 +50,19 @@ struct RestrictionsRepo {
                     .sunday: period.sunday,
                 ]
                 
-                print("ATTENTION")
-                print(
-                    RestrictionPersistence(
-                        id: place.streetId,
-                        streetName: place.nameStreet,
-                        longitude: place.longitude,
-                        latitude: place.latitude,
-                        description: regl.description,
-                        hourlyRate: place.hourlyRate,
-                        startTime: period.startTime,
-                        endTime: period.endTime,
-                        weekdays: weekdaysDict
-                    ))
+                // print("ATTENTION")
+                // print(
+                //     RestrictionPersistence(
+                //         id: place.streetId,
+                //         streetName: place.nameStreet,
+                //         longitude: place.longitude,
+                //         latitude: place.latitude,
+                //         description: regl.description,
+                //         hourlyRate: place.hourlyRate,
+                //         startTime: period.startTime,
+                //         endTime: period.endTime,
+                //         weekdays: weekdaysDict
+                //     ))
 
                 restrictions.append(
                     RestrictionPersistence(
