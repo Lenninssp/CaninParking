@@ -1,5 +1,5 @@
 //
-//  UserRequest.swift
+//  LogoutUserController.swift
 //  CanninLennin
 //
 //  Created by Lennin Sabogal on 20/11/25.
