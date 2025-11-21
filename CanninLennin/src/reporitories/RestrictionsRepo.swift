@@ -2,11 +2,9 @@ import Foundation
 
 struct RestrictionsRepo {
     private let placesLink = "https://www.agencemobilitedurable.ca/images/data/Places.csv"
-    private let reglementationLink =
-        "https://www.agencemobilitedurable.ca/images/data/Reglementations.csv"
+    private let reglementationLink = "https://www.agencemobilitedurable.ca/images/data/ReglementationPeriode.csv"
     private let periodsLink = "https://www.agencemobilitedurable.ca/images/data/Periodes.csv"
-    private let emplacementReglementations =
-        "https://www.agencemobilitedurable.ca/images/data/EmplacementReglementation.csv"
+    private let emplacementReglementations = "https://www.agencemobilitedurable.ca/images/data/EmplacementReglementation.csv"
 
     func getParkingRestrictions() async throws -> [RestrictionPersistence] {
         async let placesCSV = fetchCSV(from: placesLink)
@@ -21,65 +19,64 @@ struct RestrictionsRepo {
             parseEmplacementsCSV(emplacementCSV)
         )
 
-        print(
-            "places: \(places.count), regles: \(regls.count), periods: \(periods.count), empls: \(empls.count)"
-        )
+        print("places: \(places.count), regles: \(regls.count), periods: \(periods.count), empls: \(empls.count)")
 
-        let reglDict = Dictionary(uniqueKeysWithValues: regls.map { ($0.code, $0) })
+
+        let reglsByCode = Dictionary(grouping: regls, by: { $0.code })
         let periodDict = Dictionary(uniqueKeysWithValues: periods.map { ($0.id, $0) })
         let emplsByPlace = Dictionary(grouping: empls, by: { $0.emplacementId })
 
         var restrictions: [RestrictionPersistence] = []
+        var skippedCount = 0
 
         for place in places {
             guard let placeEmpls = emplsByPlace[place.streetId] else { continue }
+            
             for empl in placeEmpls {
-                guard let regl = reglDict[empl.codeAutocollant],
-                    let period = periodDict[regl.periodId]
-                else {
+            
+                guard let reglList = reglsByCode[empl.codeAutocollant] else {
+                    skippedCount += 1
                     continue
                 }
-
-                let weekdaysDict: [Weekday: Bool] = [
-                    .monday: period.monday,
-                    .tuesday: period.tuesday,
-                    .wednesday: period.wednesday,
-                    .thursday: period.thursday,
-                    .friday: period.friday,
-                    .saturday: period.saturday,
-                    .sunday: period.sunday,
-                ]
                 
-                // print("ATTENTION")
-                // print(
-                //     RestrictionPersistence(
-                //         id: place.streetId,
-                //         streetName: place.nameStreet,
-                //         longitude: place.longitude,
-                //         latitude: place.latitude,
-                //         description: regl.description,
-                //         hourlyRate: place.hourlyRate,
-                //         startTime: period.startTime,
-                //         endTime: period.endTime,
-                //         weekdays: weekdaysDict
-                //     ))
+                for regl in reglList {
+                    guard let period = periodDict[regl.periodId] else {
+                        skippedCount += 1
+                        continue
+                    }
 
-                restrictions.append(
-                    RestrictionPersistence(
-                        id: place.streetId,
-                        streetName: place.nameStreet,
-                        longitude: place.longitude,
-                        latitude: place.latitude,
-                        description: regl.description,
-                        hourlyRate: place.hourlyRate,
-                        startTime: period.startTime,
-                        endTime: period.endTime,
-                        weekdays: weekdaysDict
+                    let weekdaysDict: [Weekday: Bool] = [
+                        .monday: period.monday,
+                        .tuesday: period.tuesday,
+                        .wednesday: period.wednesday,
+                        .thursday: period.thursday,
+                        .friday: period.friday,
+                        .saturday: period.saturday,
+                        .sunday: period.sunday,
+                    ]
+                    
+                    restrictions.append(
+                        RestrictionPersistence(
+                            id: "\(place.streetId)-\(regl.code)-\(period.id)",
+                            streetName: place.nameStreet,
+                            longitude: place.longitude,
+                            latitude: place.latitude,
+                            description: regl.description,
+                            hourlyRate: place.hourlyRate,
+                            startTime: period.startTime,
+                            endTime: period.endTime,
+                            weekdays: weekdaysDict
+                        )
                     )
-                )
+                }
             }
         }
 
+        if skippedCount > 0 {
+            print("Skipped \(skippedCount) entries due to missing data")
+        }
+        
+        print("Created \(restrictions.count) total restrictions")
         return restrictions
     }
 
@@ -134,7 +131,7 @@ struct RestrictionsRepo {
     private func parseReglementationsCSV(_ csv: String) -> [ReglementationPeriodsResponse] {
         var result: [ReglementationPeriodsResponse] = []
         let lines = csv.components(separatedBy: .newlines).filter { !$0.isEmpty }
-
+        
         for line in lines.dropFirst() {
             let columns = line.split(separator: ",").map {
                 $0.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -143,8 +140,8 @@ struct RestrictionsRepo {
                 result.append(
                     ReglementationPeriodsResponse(
                         code: columns[0],
-                        periodId: Int(columns[2]) ?? 0,
-                        description: columns[3]
+                        periodId: Int(columns[1]) ?? 0,
+                        description: columns[2]
                     )
                 )
             }
