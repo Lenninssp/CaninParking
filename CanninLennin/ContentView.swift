@@ -21,7 +21,7 @@ struct ContentView: View {
     var body: some View {
 
         ZStack(alignment: .center) {
-            StreetPopUpVIew()
+            StreetPopUpView()
                 .ignoresSafeArea()
                 .blur(radius: selectedTab == .search || selectedTab == .settings  ? 5 : 0)
             Group{
@@ -86,7 +86,7 @@ struct ContentView: View {
                 searchFocused: $searchFocused
             )
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom) // ✅ important: attach to the outer ZStack
+        .ignoresSafeArea(.keyboard, edges: .bottom) // important: attach to the outer ZStack
 
 
     }

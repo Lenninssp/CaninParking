@@ -1,52 +1,84 @@
-//
-//  StreetPopUpVIew.swift
-//  CanninLennin
-//
-//  Created by Camilo Montero on 2025-10-29.
-//
-
 import SwiftUI
 import MapKit
 
-struct StreetPopUpVIew: View {
+struct StreetPopUpView: View {
     @State private var selectedStreet: Street? = nil
-    private let streets = loadStreets()
+    @State private var streets: [Street] = []
+    @State private var hasLoaded = false
+
+
+    
+    
     var body: some View {
         ZStack {
-                    // 👇 FIX: pass $selectedStreet
-                    StreetMapView(streets: streets, selectedStreet: $selectedStreet)
-                        .ignoresSafeArea()
-                    
-                    // Popup when a street is tapped
-                    if let street = selectedStreet {
-                        VStack {
-                            Spacer()
-                            VStack(spacing: 6) {
-                                Text(street.name)
-                                    .font(.headline)
-                                Text(street.coordinates.count > 1
-                                     ? "\(street.coordinates.count) points"
-                                     : "1 point")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+            StreetMapView(streets: $streets, selectedStreet: $selectedStreet)
+                .ignoresSafeArea()
+            
+            // Bottom popup
+            if let street = selectedStreet {
+                VStack {
+                    Spacer()
+                    VStack(spacing: 6) {
+                        Text(street.name)
+                            .font(.headline)
+                            .padding(.top, 4)
+                        
+                        if !street.restrictions.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(street.restrictions, id: \.id) { r in
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(r.description)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                }
                             }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(.clear)
-                            .glassEffect(.clear)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .shadow(radius: 10)
-                            .padding()
-                            .padding(.bottom, 90)
-
+                            .padding(.top, 6)
+                        } else {
+                            Text("No restrictions")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        .transition(.move(edge: .bottom))
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .glassEffect(.clear)
+                    .background(.clear)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(radius: 10)
+                    .padding(.horizontal)
+                    .padding(.bottom, 30)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .padding(.bottom, 90)
+
                 }
-                .animation(.spring(), value: selectedStreet)
+            }
+        }
+        .animation(.spring(), value: selectedStreet)
+        .task {
+            if !hasLoaded {
+                hasLoaded = true
+                loadData()
+            }
+        }
+    }
+    
+    // MARK: - Load Data
+    func loadData() {
+        var streetList = loadStreets()
+        let restrictionList = Restriction.loadRestrictions()
+        
+        assignRestrictions(restrictionList, to: &streetList)
+        streets = streetList
+        
+        print("✅ Loaded \(streetList.count) streets")
+        for street in streetList {
+            print("\(street.name): \(street.restrictions.count) restrictions")
+        }
     }
 }
 
 #Preview {
-    StreetPopUpVIew()
+    StreetPopUpView()
 }
