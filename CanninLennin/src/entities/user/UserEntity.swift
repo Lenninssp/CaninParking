@@ -15,11 +15,13 @@ struct UserEntity {
     init(uid: String, email: String ){
         self.uid = uid
         self.email = email
+        self.password = ""
     }
     
     init(email: String, password: String) {
         self.email = email
         self.password = password
+        self.uid = ""
     }
     
     func emailIsValid() -> Bool{
