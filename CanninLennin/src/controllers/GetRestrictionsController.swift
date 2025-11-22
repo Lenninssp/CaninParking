@@ -1,7 +1,7 @@
 import Foundation
 
 struct GetRestrictionsController {
-    var useCase: GetRestrictionsUseCase
+    let useCase: GetRestrictionsUseCase
     
     init() {
         self.useCase = GetRestrictionsUseCase()

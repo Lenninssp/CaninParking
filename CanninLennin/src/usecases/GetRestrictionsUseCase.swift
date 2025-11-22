@@ -17,10 +17,10 @@ struct GetRestrictionsUseCase {
     }
     
     func execute(request: RestrictionRequestModel) async throws -> [RestrictionResponseModel] {
-        print("🔍 Fetching parking restrictions...")
+        print("Fetching parking restrictions...")
         
         let persistenceResults = try await resRepo.getParkingRestrictions()
-        print("📦 Received \(persistenceResults.count) restrictions from repository")
+        print("Received \(persistenceResults.count) restrictions from repository")
         
         var responseList: [RestrictionResponseModel] = []
         var failedParseCount = 0

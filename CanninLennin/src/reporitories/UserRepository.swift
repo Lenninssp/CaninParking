@@ -20,7 +20,7 @@ struct UserRepository {
         self.firebaseAuth = Auth.auth()
     }
     
-    public func getInfo() -> UserPersistence {
+    public func getInfo() async throws -> UserPersistence {
         guard let user = firebaseAuth.currentUser else {
             return UserPersistence(uid: "", email: "")
         }
@@ -33,7 +33,7 @@ struct UserRepository {
     
     // taken from: https://firebase.google.com/docs/auth/ios/custom-auth?_gl=1*1u58ey1*_up*MQ..*_ga*MTQ1NTU1MTI3MC4xNzYzNjkzMjE4*_ga_CW55HF8NVT*czE3NjM2OTMyMTgkbzEkZzAkdDE3NjM2OTMyMTgkajYwJGwwJGgw#swift_1
  
-    public func signOut() -> [String] {
+    public func signOut() async throws -> [String] {
         do {
             try firebaseAuth.signOut()
         } catch let signOutError as NSError {
@@ -42,7 +42,7 @@ struct UserRepository {
         return ["SUCCESS", "The user was successfully signed out"]
     }
     
-    public func authentify(email: String, password: String) -> [String] {
+    public func authentify(email: String, password: String) async throws -> [String] {
         var future: [String] = [""]
         firebaseAuth.signIn(withEmail: email, password: password){ authResult, error in
             guard let user = authResult?.user, error == nil else {
@@ -54,7 +54,7 @@ struct UserRepository {
         return future
     }
     
-    public func create(email: String, password: String) -> [String]{
+    public func create(email: String, password: String) async throws -> [String]{
         var future: [String] = [""]
         firebaseAuth.createUser(withEmail: email, password: password) { authResult, error in
             guard let user = authResult?.user, error == nil else {

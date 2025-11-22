@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+struct SignupUserController{
+    let useCase: SignupUserUseCase
+    
+    init(){
+        self.useCase = SignupUserUseCase()
+    }
+    public func POST(request: UserRequestModel) async throws -> UserResponseModel {
+        return try await useCase.execute(request: request)
+    }
+    
+}
