@@ -14,10 +14,13 @@ struct UserResponseModel {
         
     init(message: String) {
         self.message = message
+        self.email = ""
+        self.uid = ""
     }
     init(uid: String, email: String) {
         self.uid = uid
         self.email = email
+        self.message = nil
     }
     
     func isSuccess() -> Bool {
