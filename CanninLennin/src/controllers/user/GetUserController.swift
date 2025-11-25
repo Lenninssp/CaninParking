@@ -13,7 +13,7 @@ struct GetUserController {
     init(){
         self.useCase = GetUserUseCase()
     }
-    public func POST() async throws -> UserResponseModel {
+    public func GET() async throws -> UserResponseModel {
         return try await useCase.execute()
     }
 }

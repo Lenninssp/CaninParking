@@ -88,10 +88,21 @@ struct FloatingNavBar: View {
 
                     NavButton(
                         systemName: "gear",
-                        isSelected: selectedTab == .settings
+                        isSelected: selectedTab == .listview
                     ) {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
-                            selectedTab = .settings
+                            selectedTab = .listview
+                            collapseSearch()
+                        }
+                    }
+                    Spacer()
+
+                    NavButton(
+                        systemName: "person",
+                        isSelected: selectedTab == .profile
+                    ) {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
+                            selectedTab = .profile
                             collapseSearch()
                         }
                     }

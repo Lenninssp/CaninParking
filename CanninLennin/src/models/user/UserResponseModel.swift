@@ -24,7 +24,8 @@ struct UserResponseModel {
     }
     
     func isSuccess() -> Bool {
-        return !(message?.isEmpty ?? true)
+        message == nil && !uid.isEmpty
     }
+
     
 }
