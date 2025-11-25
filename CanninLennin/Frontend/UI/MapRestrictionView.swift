@@ -23,6 +23,7 @@ struct MapRestrictionView: View {
     @State private var restrictions: [RestrictionResponseModel] = []
     @State private var errorMessage: String?
     @State private var isLoading = false
+    @State private var visibleRegion: MKCoordinateRegion?
 
     @State private var selectedRestriction: RestrictionResponseModel?
     @State private var isShowingSheet = false
@@ -63,6 +64,7 @@ struct MapRestrictionView: View {
             }
             .onMapCameraChange(frequency: .onEnd) { context in
                 centerCoordinate = context.region.center
+                visibleRegion = context.region
                 print("map center:", centerCoordinate.longitude)
 
                 Task {
@@ -115,13 +117,15 @@ struct MapRestrictionView: View {
         
         let centerLat = centerCoordinate.latitude
         let centerLong = centerCoordinate.longitude
+        
+        let radius = calculateVisibleRadius()
     
         print("this is my latitude \(centerLat), longitude \(centerLong)")
 
         let request = RestrictionRequestModel(
             longitude: centerLong,
             latitude: centerLat,
-            radius: 1500
+            radius: radius
         )
 
         do {
@@ -164,6 +168,33 @@ struct MapRestrictionView: View {
         
         return nowTime >= start && nowTime <= end
     }
+    
+    private func calculateVisibleRadius()->Double {
+        guard let region = visibleRegion else {
+            return 1500
+        }
+        
+        let center = region.center
+        let span = region.span
+        
+        let topleft = CLLocation(latitude: center.latitude + (span.latitudeDelta/2), longitude: center.longitude - (span.longitudeDelta/2))
+
+        
+        let centerLocation = CLLocation(
+            latitude: center.latitude,
+            longitude: center.longitude
+        )
+        
+        let diagonalDistance = centerLocation.distance(from: topleft)
+        
+        let radiusWithBuffer = diagonalDistance * 1.1
+        
+        let minRadius: Double = 500
+        let maxRadius: Double = 5000
+        return min(max(radiusWithBuffer, minRadius), maxRadius)
+
+    }
+    
 }
 
 #Preview {

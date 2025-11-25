@@ -5,8 +5,24 @@ struct RestrictionsRepo {
     private let reglementationLink = "https://www.agencemobilitedurable.ca/images/data/ReglementationPeriode.csv"
     private let periodsLink = "https://www.agencemobilitedurable.ca/images/data/Periodes.csv"
     private let emplacementReglementations = "https://www.agencemobilitedurable.ca/images/data/EmplacementReglementation.csv"
-
-    func getParkingRestrictions() async throws -> [RestrictionPersistence] {
+    
+    private let cacheKey = "cachedParkingRestrictions"
+    private let cacheTimestampKey = "cachedParkingRestrictionsTimestamp"
+    
+    func getParkingRestrictions(forceRefresh: Bool = false) async throws -> [RestrictionPersistence] {
+        if !forceRefresh, let cached = loadFromCache() {
+            print("Loaded \(cached.count) restrictions from cache")
+            return cached
+        }
+        print("Fetching fresh data from server...")
+        let restrictions = try await fetchAndProcessRestrictions()
+        
+        saveToCache(restrictions)
+        
+        return restrictions
+    }
+    
+    private func fetchAndProcessRestrictions() async throws -> [RestrictionPersistence] {
         async let placesCSV = fetchCSV(from: placesLink)
         async let reglCSV = fetchCSV(from: reglementationLink)
         async let periodsCSV = fetchCSV(from: periodsLink)
@@ -21,7 +37,6 @@ struct RestrictionsRepo {
 
         print("places: \(places.count), regles: \(regls.count), periods: \(periods.count), empls: \(empls.count)")
 
-
         let reglsByCode = Dictionary(grouping: regls, by: { $0.code })
         let periodDict = Dictionary(uniqueKeysWithValues: periods.map { ($0.id, $0) })
         let emplsByPlace = Dictionary(grouping: empls, by: { $0.emplacementId })
@@ -33,7 +48,6 @@ struct RestrictionsRepo {
             guard let placeEmpls = emplsByPlace[place.streetId] else { continue }
             
             for empl in placeEmpls {
-            
                 guard let reglList = reglsByCode[empl.codeAutocollant] else {
                     skippedCount += 1
                     continue
@@ -79,7 +93,48 @@ struct RestrictionsRepo {
         print("Created \(restrictions.count) total restrictions")
         return restrictions
     }
+    
+    
+    private func loadFromCache() -> [RestrictionPersistence]? {
+        guard let data = UserDefaults.standard.data(forKey: cacheKey) else {
+            return nil
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            let restrictions = try decoder.decode([RestrictionPersistence].self, from: data)
+            return restrictions
+        } catch {
+            print("Failed to decode cached data: \(error)")
+            return nil
+        }
+    }
+    
+    private func saveToCache(_ restrictions: [RestrictionPersistence]) {
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(restrictions)
+            UserDefaults.standard.set(data, forKey: cacheKey)
+            UserDefaults.standard.set(Date(), forKey: cacheTimestampKey)
+            print("Saved \(restrictions.count) restrictions to cache")
+        } catch {
+            print("Failed to cache data: \(error)")
+        }
+    }
+    
+    func clearCache() {
+        UserDefaults.standard.removeObject(forKey: cacheKey)
+        UserDefaults.standard.removeObject(forKey: cacheTimestampKey)
+    }
+    
+    func getCacheAge() -> TimeInterval? {
+        guard let timestamp = UserDefaults.standard.object(forKey: cacheTimestampKey) as? Date else {
+            return nil
+        }
+        return Date().timeIntervalSince(timestamp)
+    }
 
+    
     private func parseEmplacementsCSV(_ csv: String) -> [EmplacementReglamentationsResponse] {
         var result: [EmplacementReglamentationsResponse] = []
         let lines = csv.components(separatedBy: .newlines).filter { !$0.isEmpty }

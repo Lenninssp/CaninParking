@@ -16,7 +16,8 @@ struct LogOutView: View {
                 let controller = LogoutUserController()
                 
                 do {
-                    try await controller.POST()
+                    let response = try await controller.POST()
+                    print(response)
                     await MainActor.run {
                         onLoggedOut()
                     }
